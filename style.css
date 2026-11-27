@@ -46,6 +46,10 @@ html {
   scroll-padding-top: 100px;
 }
 
+main [id] {
+    scroll-margin-top: 100px;
+}
+
 body {
   margin: 0;
   background: var(--color-white);
@@ -1942,118 +1946,233 @@ button {
     height: 74px;
   }
 
+  
+  /* =========================================
+     MOBILE NAVIGATION — SLIDE-IN DRAWER
+  ========================================= */
+
   .menu-toggle {
     position: relative;
     z-index: 1002;
     display: flex;
-    width: 44px;
-    height: 44px;
+    width: 48px;
+    height: 48px;
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    gap: 6px;
+    gap: 5px;
     padding: 0;
-    background: transparent;
+    background: var(--color-white);
     border: 1px solid var(--color-border);
-    border-radius: 9px;
+    border-radius: 12px;
+    box-shadow: 0 3px 12px rgba(9, 43, 69, .06);
     cursor: pointer;
+    transition: background var(--motion-fast), border-color var(--motion-fast);
+  }
+
+  .menu-toggle:hover {
+    background: var(--color-surface);
+    border-color: var(--color-brand-500);
   }
 
   .menu-toggle span {
-    width: 17px;
-    height: 1.5px;
+    display: block;
+    width: 21px;
+    height: 2px;
     background: var(--color-brand-900);
-    transition: transform var(--motion-fast);
+    border-radius: 5px;
+    transition:
+      transform 250ms ease,
+      opacity 180ms ease,
+      width 180ms ease;
   }
 
+  .menu-toggle span:nth-child(2) {
+    width: 15px;
+    margin-left: 6px;
+  }
+
+  /* Hamburger transforms into X */
+
   .menu-toggle[aria-expanded="true"] span:first-child {
-    transform: translateY(3.75px) rotate(45deg);
+    transform: translateY(7px) rotate(45deg);
+  }
+
+  .menu-toggle[aria-expanded="true"] span:nth-child(2) {
+    opacity: 0;
+    transform: translateX(8px);
   }
 
   .menu-toggle[aria-expanded="true"] span:last-child {
-    transform: translateY(-3.75px) rotate(-45deg);
+    transform: translateY(-7px) rotate(-45deg);
   }
+
+  /* Dark background overlay */
+
+  body.menu-open::after {
+    position: fixed;
+    z-index: 999;
+    inset: 0;
+    background: rgba(5, 25, 42, .48);
+    backdrop-filter: blur(4px);
+    -webkit-backdrop-filter: blur(4px);
+    content: "";
+    animation: menuOverlayIn 250ms ease both;
+  }
+
+  @keyframes menuOverlayIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+  }
+
+  /* Sliding navigation panel */
 
   .primary-nav {
     position: fixed;
     z-index: 1001;
-    top: 74px;
+    top: 0;
     right: 0;
-    left: 0;
+    left: auto;
     display: flex;
-    height: calc(100dvh - 74px);
+    width: min(420px, 88vw);
+    height: 100vh;
+    height: 100dvh;
     flex-direction: column;
     align-items: stretch;
     gap: 0;
-    padding: 20px var(--page-gutter) 35px;
+    padding: 105px 28px 35px;
     overflow-y: auto;
+    overscroll-behavior: contain;
     background: var(--color-white);
-    border-top: 1px solid var(--color-border);
+    border-left: 1px solid var(--color-border);
+    box-shadow: -15px 0 45px rgba(9, 43, 69, .12);
     opacity: 0;
     visibility: hidden;
-    transform: translateY(-8px);
-    transition: opacity var(--motion-standard), transform var(--motion-standard), visibility var(--motion-standard);
+    transform: translateX(100%);
+    transition:
+      transform 350ms cubic-bezier(.22, 1, .36, 1),
+      opacity 250ms ease,
+      visibility 350ms ease;
   }
 
   .primary-nav.is-open {
     opacity: 1;
     visibility: visible;
-    transform: translateY(0);
+    transform: translateX(0);
   }
 
-  .nav-link {
-    min-height: 54px;
-    justify-content: flex-start;
+  /* Small drawer heading */
+
+  .primary-nav::before {
+    display: block;
+    margin-bottom: 15px;
+    color: var(--color-brand-500);
+    content: "EXPLORE BIZVOICE";
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: .16em;
+  }
+
+  /* Main navigation links */
+
+  .primary-nav .nav-link {
+    display: flex;
+    width: 100%;
+    min-height: 60px;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 3px;
+    color: var(--color-brand-900);
+    background: transparent;
     border-bottom: 1px solid var(--color-border);
-    font-size: 16px;
+    font-size: 17px;
+    font-weight: 500;
+    text-align: left;
   }
 
-  .nav-link.active::after {
+  .primary-nav .nav-link:hover,
+  .primary-nav .nav-link.active {
+    color: var(--color-brand-500);
+  }
+
+  .primary-nav .nav-link.active::after {
     display: none;
   }
 
-  .nav-dropdown {
+  /* Company dropdown */
+
+  .primary-nav .nav-dropdown {
     display: flex;
     height: auto;
     flex-direction: column;
     align-items: stretch;
   }
 
-  .dropdown-trigger {
+  .primary-nav .dropdown-trigger {
     width: 100%;
     justify-content: space-between;
   }
 
-  .dropdown-menu {
+  .primary-nav .dropdown-trigger svg {
+    width: 16px;
+    height: 16px;
+  }
+
+  .primary-nav .dropdown-menu {
     position: static;
     display: none;
     min-width: 0;
-    padding: 4px 0 9px 13px;
+    gap: 3px;
+    padding: 8px 0 12px 14px;
+    background: var(--color-surface);
     border: 0;
-    border-radius: 0;
+    border-radius: 9px;
     box-shadow: none;
     opacity: 1;
     visibility: visible;
     transform: none;
   }
 
-  .nav-dropdown.is-open .dropdown-menu {
+  .primary-nav .nav-dropdown.is-open .dropdown-menu {
     display: grid;
   }
 
-  .dropdown-menu a {
-    padding: 10px 12px;
+  .primary-nav .dropdown-menu a {
+    padding: 11px 13px;
+    color: var(--color-text);
+    font-size: 14px;
+    border-radius: 7px;
   }
 
-  .login-soon {
-    min-height: 54px;
+  .primary-nav .dropdown-menu a:hover {
+    color: var(--color-brand-700);
+    background: #eaf6f8;
+  }
+
+  /* Login status */
+
+  .primary-nav .login-soon {
+    display: flex;
+    min-height: 58px;
+    align-items: center;
     border-bottom: 1px solid var(--color-border);
+    font-size: 14px;
   }
 
-  .nav-cta {
-    margin-top: 23px;
-    align-self: flex-start;
+  /* Main CTA */
+
+  .primary-nav .nav-cta {
+    display: flex;
+    width: 100%;
+    min-height: 52px;
+    justify-content: center;
+    align-self: stretch;
+    margin-top: 25px;
+    padding-inline: 15px;
+    border-radius: 10px;
+    font-size: 14px;
   }
+
 
   .hero-section {
     padding-top: 55px;
